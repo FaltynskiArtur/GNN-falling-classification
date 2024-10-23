@@ -6,6 +6,7 @@ import scipy.io
 import torch
 from torch_geometric.data import Data
 
+
 # Etykiety kolumn (jeśli potrzebne do innych funkcji)
 column_labels = [
     "Head top", "Head front", "LShoulder", "LElbow", "LWrist", "RShoulder",

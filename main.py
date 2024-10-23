@@ -27,7 +27,7 @@ def train(model, train_loader, val_loader, optimizer, criterion, early_stopping_
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
     train_losses, val_losses, train_accuracies, val_accuracies = [], [], [], []
 
-    for epoch in range(1, 101):
+    for epoch in range(1, 16):
         model.train()
         total_loss = 0
         correct = 0

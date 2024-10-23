@@ -99,8 +99,8 @@ def convert_frame_to_graph(joints):
 
 if __name__ == "__main__":
     model = load_model('NAJLEPSZY985.pth', F.relu)
-    video_path = r"D:\FIR-Human\FIR-Human\BLOCK_3_FALL\FALLING_VOL_4\2_BACKWARDS\2_DYNAMIC\1\FinalVideo.avi"
-    joints_data_path = r"D:\FIR-Human\FIR-Human\BLOCK_3_FALL\FALLING_VOL_4\2_BACKWARDS\1_STATIC\1\labels.mat"
+    video_path = r"D:\FIR-Human\FIR-Human\BLOCK_3_FALL\FALLING_VOL_4\1_FORWARDS\3_SLOW\1\FinalVideo.avi"
+    joints_data_path = r"D:\FIR-Human\FIR-Human\BLOCK_3_FALL\FALLING_VOL_4\1_FORWARDS\3_SLOW\1\labels.mat"
 
     # Load joints data from .mat file
     joints_data = extract_data_from_mat(joints_data_path)
