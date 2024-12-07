@@ -21,13 +21,13 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # Ścieżka do przeszukania
 path_to_search = 'D:/FIR-Human/FIR-Human'
 
-def train(model, train_loader, val_loader, optimizer, criterion, early_stopping_patience=10):
+def train(model, train_loader, val_loader, optimizer, criterion, early_stopping_patience=100):
     patience_counter = 0
     best_val_acc = 0
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
-    train_losses, val_losses, train_accuracies, val_accuracies = [], [], [], []
+    train_losses, train_accuracies = [], []
 
-    for epoch in range(1, 16):
+    for epoch in range(1, 151):
         model.train()
         total_loss = 0
         correct = 0
@@ -48,8 +48,6 @@ def train(model, train_loader, val_loader, optimizer, criterion, early_stopping_
         train_accuracies.append(train_acc)
 
         val_acc, val_loss, val_y_true, val_y_pred = test(model, val_loader, criterion)
-        val_losses.append(val_loss)
-        val_accuracies.append(val_acc)
         print(f"Epoch {epoch}, Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_acc:.4f}")
 
         scheduler.step()
@@ -64,7 +62,10 @@ def train(model, train_loader, val_loader, optimizer, criterion, early_stopping_
                 print("Early stopping triggered")
                 break
 
-    plot_metrics(train_losses, val_losses, train_accuracies, val_accuracies)
+    plot_metrics(train_losses, train_accuracies)
+
+    # Po zakończeniu trenowania wyświetl macierz pomyłek dla zbioru walidacyjnego
+    plot_confusion_matrix(val_y_true, val_y_pred, class_names=['Forwards', 'Backwards', 'Side'])
 
 def test(model, loader, criterion=None):
     model.eval()
@@ -88,24 +89,38 @@ def test(model, loader, criterion=None):
         return accuracy, loss, y_true, y_pred
     return accuracy, y_true, y_pred
 
-def plot_metrics(train_losses, val_losses, train_accuracies, val_accuracies):
+def plot_metrics(train_losses, train_accuracies):
+    # Wykres dla training loss
     epochs = range(1, len(train_losses) + 1)
-    plt.figure(figsize=(12, 5))
-    plt.subplot(1, 2, 1)
-    plt.plot(epochs, train_losses, 'b', label='Training loss')
-    plt.plot(epochs, val_losses, 'r', label='Validation loss')
-    plt.title('Training and validation loss')
+    plt.figure(figsize=(8, 6))
+    plt.plot(epochs, train_losses, 'b', label='Training Loss')
+    plt.title('Training Loss')
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
     plt.legend()
-    plt.subplot(1, 2, 2)
-    plt.plot(epochs, train_accuracies, 'b', label='Training accuracy')
-    plt.plot(epochs, val_accuracies, 'r', label='Validation accuracy')
-    plt.title('Training and validation accuracy')
+    plt.show()
+
+    # Wykres dla training accuracy
+    plt.figure(figsize=(8, 6))
+    plt.plot(epochs, train_accuracies, 'b', label='Training Accuracy')
+    plt.title('Training Accuracy')
     plt.xlabel('Epochs')
     plt.ylabel('Accuracy')
     plt.legend()
     plt.show()
+
+
+def plot_confusion_matrix(y_true, y_pred, class_names):
+    # Obliczenie macierzy pomyłek
+    cm = confusion_matrix(y_true, y_pred, normalize='true')  # Normalizacja po każdej klasie
+    plt.figure(figsize=(8, 6))
+    # Wizualizacja macierzy pomyłek
+    sns.heatmap(cm, annot=True, fmt='.2f', cmap='Blues', xticklabels=class_names, yticklabels=class_names)
+    plt.title('Normalized Confusion Matrix')
+    plt.xlabel('Predicted')
+    plt.ylabel('Actual')
+    plt.show()
+
 
 def save_model(model, path='model.pth'):
     torch.save(model.state_dict(), path)

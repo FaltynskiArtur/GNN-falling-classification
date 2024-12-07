@@ -54,7 +54,7 @@ def visualize_skeleton_3D(data_3D, frame_idx=0):
     ax.set_xlabel('Y Label')  # Zmieniono na Y
     ax.set_ylabel('X Label')  # Zmieniono na X
     ax.set_zlabel('Z Label')  # Z pozostaje bez zmian
-    ax.set_title(f"Szkielet 3D - Frame {frame_idx} (Zamiana osi X z Y)")
+    ax.set_title(f"Szkielet 3D - Frame {frame_idx} ")
     # Zmiana pozycji kamery
     ax.view_init(elev=90, azim=90)  # Tutaj ustawiamy startowy widok kamery
     plt.show()
